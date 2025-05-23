@@ -30,4 +30,4 @@ MIT — use freely, improve freely.
 
 ---
 
-🔗 Made for the 3D printing community by [YourNameHere]
+🔗 Made for the 3D printing community by [dohgren]
