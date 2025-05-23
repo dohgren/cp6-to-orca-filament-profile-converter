@@ -1,6 +1,6 @@
-# Creality Print 6 to OrcaSlicer Converter
+# Creality to OrcaSlicer Converter
 
-Easily convert filament profiles from **Creality Print 6** (JSON format) into **OrcaSlicer-compatible** (tested with version 2.3) filament profiles.
+Easily convert filament profiles from **Creality Print 6** (JSON format) into **OrcaSlicer-compatible** filament profiles.
 
 ## 🚀 Features
 
@@ -30,4 +30,4 @@ MIT — use freely, improve freely.
 
 ---
 
-🔗 Made for the 3D printing community by [dohgren](https://github.com/dohgren)
+🔗 Made for the 3D printing community by [YourNameHere]
