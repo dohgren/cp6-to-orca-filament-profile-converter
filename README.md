@@ -1,4 +1,4 @@
-# Creality to OrcaSlicer Converter
+# Creality K2 Plus to OrcaSlicer Converter
 
 Easily convert filament profiles from **Creality Print 6** (JSON format) into **OrcaSlicer-compatible** filament profiles.
 
@@ -16,7 +16,7 @@ Easily convert filament profiles from **Creality Print 6** (JSON format) into **
 1. Clone this repository or [download index.html directly](index.html)
 2. Open `index.html` in your web browser (Chrome, Firefox, Safari, Edge)
 3. Upload your Creality `.json` filament profile
-4. (Optional) Upload a ZIP of generic base profiles to auto-resolve `inherits`
+4. (Optional) Create and upload a ZIP of generic base profiles to auto-resolve `inherits`. Usually found here on MacOS (probably similar in Windows or other OS's): /Users/YOURUSERNAME/Library/Application Support/Creality/Creality Print/6.0/system/Creality/filament
 5. Preview the converted OrcaSlicer profile
 6. Click **Download** to save and import into OrcaSlicer
 
