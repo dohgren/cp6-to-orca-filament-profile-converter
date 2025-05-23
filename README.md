@@ -1,4 +1,4 @@
-# Creality K2 Plus to OrcaSlicer Converter
+# Creality Print 6 to OrcaSlicer 2.3 Converter (tested with K2 Plus profiles)
 
 Easily convert filament profiles from **Creality Print 6** (JSON format) into **OrcaSlicer-compatible** filament profiles.
 
