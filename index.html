@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creality to OrcaSlicer Converter</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    input, button { margin: 10px 0; }
+    pre { background: #f0f0f0; padding: 10px; overflow: auto; max-height: 300px; }
+  </style>
+</head>
+<body>
+  <h1>Creality → OrcaSlicer Filament Profile Converter</h1>
+  <p>1. Upload your <strong>Creality Print 6 filament .json</strong> file</p>
+  <input type="file" id="filamentFile" accept=".json">
+
+  <p>2. (Optional) Upload <strong>Generic Base Profiles ZIP</strong></p>
+  <input type="file" id="zipFile" accept=".zip">
+
+  <p>3. Convert to OrcaSlicer format</p>
+  <button onclick="convertProfile()">Convert</button>
+  <a id="downloadLink" style="display:none;" download="converted_orca_profile.json">Download Converted Profile</a>
+
+  <h2>Preview</h2>
+  <pre id="output"></pre>
+
+  <script>
+    async function convertProfile() {
+      const fileInput = document.getElementById('filamentFile');
+      const zipInput = document.getElementById('zipFile');
+      if (!fileInput.files[0]) {
+        alert("Please upload a Creality filament .json file");
+        return;
+      }
+
+      const fileText = await fileInput.files[0].text();
+      const userData = JSON.parse(fileText);
+
+      let baseData = {};
+      if (zipInput.files[0] && userData.inherits) {
+        const zip = await JSZip.loadAsync(zipInput.files[0]);
+        const normName = userData.inherits.replace(/Creality /, 'Creality Generic ').replace(/ @\d\.\d nozzle/, ' @K2-all') + '.json';
+        const zipFile = zip.file(`filament/${normName}`);
+        if (zipFile) {
+          const baseText = await zipFile.async("text");
+          baseData = JSON.parse(baseText);
+        } else {
+          alert("Inherited profile not found in zip: " + normName);
+        }
+      }
+
+      function getVal(obj, key, def) {
+        let val = obj[key];
+        if (Array.isArray(val)) val = val[0];
+        return val !== undefined ? val : def;
+      }
+
+      const merged = { ...baseData, ...userData };
+      const converted = {
+        version: 1,
+        filament_type: "Custom",
+        profile_name: getVal(merged, "filament_settings_id", merged.name || "Unnamed"),
+        vendor: getVal(merged, "filament_vendor", "Unknown"),
+        density: parseFloat(getVal(merged, "filament_density", 1.24)),
+        diameter: parseFloat(getVal(merged, "filament_diameter", 1.75)),
+        extrusion_multiplier: parseFloat(getVal(merged, "filament_flow_ratio", 1.0)),
+        max_volumetric_speed: parseFloat(getVal(merged, "filament_max_volumetric_speed", 15)),
+        bed_temperature: parseInt(getVal(merged, "textured_plate_temp", 60)),
+        bed_temperature_initial_layer: parseInt(getVal(merged, "textured_plate_temp_initial_layer", 60)),
+        nozzle_temperature: parseInt(getVal(merged, "nozzle_temperature", 220)),
+        nozzle_temperature_initial_layer: parseInt(getVal(merged, "nozzle_temperature_initial_layer", 220)),
+        fan_speed: parseInt(getVal(merged, "fan_max_speed", 100)),
+        color: getVal(merged, "default_filament_colour", "#000000"),
+        notes: `Inherits: ${getVal(merged, "inherits", "None")} | Source: Converted from Creality Print 6`
+      };
+
+      const result = JSON.stringify(converted, null, 2);
+      document.getElementById("output").textContent = result;
+
+      const blob = new Blob([result], { type: "application/json" });
+      const link = document.getElementById("downloadLink");
+      link.href = URL.createObjectURL(blob);
+      link.style.display = 'inline';
+      link.textContent = 'Download Converted OrcaSlicer Profile';
+    }
+  </script>
+</body>
+</html>
